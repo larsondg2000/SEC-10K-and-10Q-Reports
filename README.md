@@ -29,12 +29,17 @@ headers = {
 }
 ```  
 * (optional) hide your email:
-* create a .env file with MY_EMAIL=your_email@my_domain.com
-* add .env file to.gotignore
-* Include the following:
+- create a .env file with MY_EMAIL=your_email@my_domain.com
+- add .env file to.gotignore
+- Include the following:
 ```
 from decouple import config
 EMAIL = config("MY_EMAIL")
+
+headers = {
+    "User-Agent": "EMAIL",  # Your email as the User-Agent
+    "Accept-Encoding": "gzip, deflate"
+}
 
 ```
 
