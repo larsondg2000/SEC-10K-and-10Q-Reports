@@ -42,7 +42,7 @@ def download_json():
 def user_input():
     """
 
-    :return:
+    :return: ticker, report, num_reports
     """
     while True:
         # User inputs the ticker, report type, and years
@@ -78,7 +78,7 @@ def ticker_to_cik(ticker):
     """
 
     :param ticker:
-    :return:
+    :return: cik, url
     """
     # load the saved JSON file
     with open("company_tickers_exchange.json", "r") as f:
@@ -101,7 +101,7 @@ def filings_to_df(url):
     """
 
     :param url:
-    :return:
+    :return: company_filings_df
     """
     # initialize pandas df
     company_filings_df = pd.DataFrame()
@@ -130,18 +130,19 @@ def filter_reports(company_filings_df, report):
 
     :param company_filings_df:
     :param report:
-    :return:
+    :return: report_filtered
     """
     # Filter to get just 10-K or 10-Q df
     if report == "10-K":
         report_filtered = company_filings_df[company_filings_df.form == "10-K"]
-        return report_filtered
+        return
     elif report == "10-Q":
         report_filtered = company_filings_df[company_filings_df.form == "10-Q"]
         return report_filtered
     else:
         print("Invalid Report")
 
+    return
 
 def access_reports(reports_filtered, num_reports, cik, output_folder):
     """
@@ -150,7 +151,7 @@ def access_reports(reports_filtered, num_reports, cik, output_folder):
     :param num_reports:
     :param cik:
     :param output_folder:
-    :return:
+    :return: None
     """
     # get the number of report_folder from the filtered df
     report_length = len(reports_filtered)
@@ -174,6 +175,8 @@ def access_reports(reports_filtered, num_reports, cik, output_folder):
         # calls function to convert webpage to pdf
         convert_to_pdf(url, report_name, output_folder)
 
+    return
+
 
 def convert_to_pdf(url, report_name, output_folder):
     """
@@ -181,7 +184,7 @@ def convert_to_pdf(url, report_name, output_folder):
     :param url:
     :param report_name:
     :param output_folder:
-    :return:
+    :return: None
     """
     # sets location of wkhtmltopdf.exe, change path if necessary
     path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
@@ -213,3 +216,5 @@ def convert_to_pdf(url, report_name, output_folder):
         print(f"Request Error: {e}")
     except Exception as e:
         print(f"Error: {e}")
+
+    return
