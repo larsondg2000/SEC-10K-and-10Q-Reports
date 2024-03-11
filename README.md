@@ -30,11 +30,13 @@ headers = {
 ```  
 
 ## Notes on pdfkit
-* requires _wkhtmltopdf_ to be installed
-* 'path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"' is the path to the executable
-* 'config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)' sets configuration
-* 'pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enable-local-file-access": ""})' 
-* the options can eliminate some errors
+* requires _wkhtmltopdf_ to be installed 
+* This is a setup for a Windows environment, not sure if it works in other operating systems.
+```
+path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe" # is the path to the executable
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)' # sets configuration
+pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enable-local-file-access": ""}) 
+```
 
 # Functions
 1) User Input Setup: enter stock ticker, desired report, and number of reports
