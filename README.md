@@ -1,7 +1,7 @@
 # 10-K and 10-Q Reports from SEC Database (EDGAR) 
 
-SEC Main Page: https://www.sec.gov/
-SEC Developer Resources: https://www.sec.gov/developer
+- SEC Main Page: https://www.sec.gov/
+- SEC Developer Resources: https://www.sec.gov/developer
 
 ## Overview
 The program gets 10-K or 10-Q reports from the SEC database for a selected stock and saves them as a pdf file.  
