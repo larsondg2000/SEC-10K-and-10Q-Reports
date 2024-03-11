@@ -58,7 +58,7 @@ def user_input():
         # Confirm inputs are correct
         if report == "10-K":
             confirm_10k = input(f"Please confirm: \n "
-                                f"You would like {num_reports} 10-K report_folder for {ticker} (Y or N): ").upper()
+                                f"You would like {num_reports} 10-K reports for {ticker} (Y or N): ").upper()
             if confirm_10k == "Y":
                 print(f"Ok, getting ({num_reports}) annual report for ticker {ticker}.")
                 break
