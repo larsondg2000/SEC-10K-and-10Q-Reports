@@ -22,10 +22,12 @@ and 10-Q reports.
 * pdfkit
 * __requires your email address in the headers setup for requests.__  Add your email address prior to running.
 
-'headers = {
+'''
+headers = {
     "User-Agent": "your_email@your_domain.com",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
-}'
+}
+'''
 
 ## Notes on pdfkit
 * requires _wkhtmltopdf_ to be installed
