@@ -3,18 +3,18 @@
 SEC Main Page: https://www.sec.gov/
 SEC Developer Resources: https://www.sec.gov/developer
 
-# Overview
+## Overview
 The program gets 10-K or 10-Q reports from the SEC database for a selected stock and saves them as a pdf file.  
 The user has the option to select the number of reports for a selected stock.  The program is limited to 10-K 
 and 10-Q reports.
 
-# Terms
+## Terms
 * 10-K: Annual shareholder report
 * 10-Q: Quarterly shareholder report
 * CIK: Central Index Key-EDGAR uses this number to identify a Company 
 * Ticker: ticker of a stock (example: Microsoft ticker is MSFT)
 
-# Requirements Library
+## Requirements Library
 * pandas
 * json
 * os
@@ -38,7 +38,7 @@ config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)' # sets configuratio
 pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enable-local-file-access": ""}) 
 ```
 
-# Functions Overview
+## Functions Overview
 1) User Input Setup: enter stock ticker, desired report, and number of reports
     function: user_inputs
     * Input parameters (by user):
@@ -49,9 +49,6 @@ pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enabl
         - Ticker
         - Report type
         - Number of reports
-
-1a) Get JSON file for company, tickers, CIK, and exchange and save to root directory.  
-    Run once to save the json file 'download_json()'
 
 2) Get CIK for ticker and generate url for report filings
     * function: ticker_to_cik
@@ -73,5 +70,5 @@ pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enabl
     * Inputs: reports_filtered, num_reports, cik, output_folder
     * Outputs: pdf file saved to reports_folder.  File format *ticker-report date.pdf*
 
-# Notes
+#### Notes
 * Program can be modified to include other reports like 8-K
