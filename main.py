@@ -51,8 +51,8 @@ def main():
     ticker, report, num_reports = user_input()
     cik, url = ticker_to_cik(ticker)
     company_filings_df = filings_to_df(url)
-    reports_filtered = filter_reports(company_filings_df, report)
-    access_reports(reports_filtered, num_reports, cik, output_folder)
+    report_filtered = filter_reports(company_filings_df, report)
+    access_reports(report_filtered, num_reports, cik, output_folder)
 
 
 if __name__ == "__main__":

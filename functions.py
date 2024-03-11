@@ -4,8 +4,13 @@ import json
 import requests
 import pdfkit
 
+# Used to hide my email
+from decouple import config
+EMAIL = config("MY_EMAIL")
+
+
 headers = {
-    "User-Agent": "larsondg2000@gmail.com",  # Your email as the User-Agent
+    "User-Agent": "EMAIL",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 
@@ -135,7 +140,7 @@ def filter_reports(company_filings_df, report):
     # Filter to get just 10-K or 10-Q df
     if report == "10-K":
         report_filtered = company_filings_df[company_filings_df.form == "10-K"]
-        return
+        return report_filtered
     elif report == "10-Q":
         report_filtered = company_filings_df[company_filings_df.form == "10-Q"]
         return report_filtered
@@ -144,17 +149,18 @@ def filter_reports(company_filings_df, report):
 
     return
 
-def access_reports(reports_filtered, num_reports, cik, output_folder):
+
+def access_reports(report_filtered, num_reports, cik, output_folder):
     """
 
-    :param reports_filtered:
+    :param report_filtered:
     :param num_reports:
     :param cik:
     :param output_folder:
     :return: None
     """
     # get the number of report_folder from the filtered df
-    report_length = len(reports_filtered)
+    report_length = len(report_filtered)
 
     # if there are fewer report_folder than requested, set the index to the number of report_folder available
     if num_reports > report_length:
@@ -163,8 +169,8 @@ def access_reports(reports_filtered, num_reports, cik, output_folder):
         idx = num_reports
 
     for i in range(0, idx):
-        access_number = reports_filtered.accessionNumber.values[i].replace("-", "")
-        file_name = reports_filtered.primaryDocument.values[i]
+        access_number = report_filtered.accessionNumber.values[i].replace("-", "")
+        file_name = report_filtered.primaryDocument.values[i]
 
         # remove the .htm from the file name
         report_name = file_name.split(".")[0]

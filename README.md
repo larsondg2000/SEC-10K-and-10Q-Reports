@@ -28,6 +28,15 @@ headers = {
     "Accept-Encoding": "gzip, deflate"
 }
 ```  
+* (optional) hide your email:
+* create a .env file with MY_EMAIL=your_email@my_domain.com
+* add .env file to.gotignore
+* Include the following:
+```
+from decouple import config
+EMAIL = config("MY_EMAIL")
+
+```
 
 ## Notes on pdfkit
 * requires _wkhtmltopdf_ to be installed 
