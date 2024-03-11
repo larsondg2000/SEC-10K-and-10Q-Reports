@@ -1,4 +1,4 @@
-# Program to get 10-K and 10-Q reports from SEC database (EDGAR) for any stock
+# 10-K and 10-Q Reports from SEC Database (EDGAR) 
 
 SEC Main Page: https://www.sec.gov/
 SEC Developer Resources: https://www.sec.gov/developer
@@ -12,7 +12,7 @@ and 10-Q reports.
 * 10-K: Annual shareholder report
 * 10-Q: Quarterly shareholder report
 * CIK: Central Index Key-EDGAR uses this number to identify a Company 
-* Ticker-ticker of a stock (example: Microsoft ticker is MSFT)
+* Ticker: ticker of a stock (example: Microsoft ticker is MSFT)
 
 # Requirements Library
 * pandas
@@ -38,40 +38,40 @@ config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)' # sets configuratio
 pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enable-local-file-access": ""}) 
 ```
 
-# Functions
+# Functions Overview
 1) User Input Setup: enter stock ticker, desired report, and number of reports
     function: user_inputs
-    Input parameters (by user):
-        Input a ticker (example AMZN)
-        Report Type (10-K or 10-Q)
-        Enter number of reports 
-    Outputs:
-        Ticker
-        Report
-        Years
+    * Input parameters (by user):
+        - Input a ticker (example AMZN)
+        - Report Type (10-K or 10-Q)
+        - Enter number of reports 
+    * Outputs:
+        - Ticker
+        - Report type
+        - Number of reports
 
 1a) Get JSON file for company, tickers, CIK, and exchange and save to root directory.  
     Run once to save the json file 'download_json()'
 
 2) Get CIK for ticker and generate url for report filings
-    function: ticker_to_cik
-    input: ticker
-    output: url for report filings
+    * function: ticker_to_cik
+    * input: ticker
+    * output: url for report filings
 
 3) Convert filings dictionary to pandas
-    function: filings_to_df
-    Input: url
-    Output: company_filings_df
+    * function: filings_to_df
+    * Input: url
+    * Output: company_filings_df
 
 4) Filter df report for either 10-K or 10-Q
-    function: filter_reports
-    Input: company_filings_df
-    output: reports_filtered
+    * function: filter_reports
+    * Input: company_filings_df
+    * output: reports_filtered
 
 5) Iterate through links and create pdf file of report
-    functions: access_reports, webpage_to_pdf
-    Inputs: reports_filtered, num_reports, cik, output_folder
-    Outputs: pdf file saved to reports_folder.  File format *ticker-report date.pdf*
+    * functions: access_reports, webpage_to_pdf
+    * Inputs: reports_filtered, num_reports, cik, output_folder
+    * Outputs: pdf file saved to reports_folder.  File format *ticker-report date.pdf*
 
 # Notes
 * Program can be modified to include other reports like 8-K
