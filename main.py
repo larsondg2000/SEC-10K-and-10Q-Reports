@@ -21,9 +21,17 @@ def main():
 
     # User enters company ticker desired and report type
     ticker, report = user_input()
+
+    # Gets CIK for ticker and all the filings for that ticker
     cik, url = ticker_to_cik(ticker)
+
+    # Converts filings to pandas
     company_filings_df = filings_to_df(url)
+
+    # Filter df by report
     report_filtered = filter_reports(company_filings_df, report)
+
+    # Get urls and create pdf file
     access_reports(report_filtered, cik, report, ticker, output_folder)
 
 

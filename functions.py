@@ -150,16 +150,17 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
     print(f"There are ({report_length}) reports\n")
     num_reports = int(input("Please enter the number of reports you want to access: "))
 
+    # Loop through reports
     for i in range(0, num_reports):
         # Get accession number and remove the dashes
         access_number = report_filtered.accessionNumber.values[i].replace("-", "")
 
-        # Get file name
+        # Get file name inputs
         file_name = report_filtered.primaryDocument.values[i]
         report_date = report_filtered.reportDate.values[i].replace("-", "")
         report_remove_dash = report.replace("-", "")
 
-        # report name ticker + report date + report type
+        # Name for pdf file: ticker + report date + report type
         report_name = ticker + '_' + report_date + '_' + report_remove_dash
 
         # Get url using cik, access_number, and file_name
@@ -176,7 +177,7 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
             print(f"**** Report {i + 1} ****")
             exhibit_link = get_href_links(url)
 
-            # Check if ex 9.1 report exists
+            # Check if ex 99.1 report exists (check if empty list)
             if not exhibit_link:
                 print("no ex 99.1 in this report")
                 print("\n")
@@ -189,6 +190,7 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
 
 
 def get_href_links(url):
+    # Scrape webpage
     soup = BeautifulSoup(requests.get(url, headers=headers).content, 'html.parser')
 
     # split at last / from url
