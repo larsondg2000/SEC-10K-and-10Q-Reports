@@ -3,85 +3,63 @@ import pandas as pd
 import json
 import requests
 import pdfkit
+from bs4 import BeautifulSoup
 
 # Used to hide my email
-from decouple import config
-EMAIL = config("MY_EMAIL")
+from my_email import hide_email
+EMAIL = (hide_email.get("email"))
 
-
+# required for requests
 headers = {
     "User-Agent": "EMAIL",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 
 
-def download_json():
-    """
-    run once
-    Download the JSON file of companies, tickers, and CIKs from SEC website:
-        url: https://www.sec.gov/files/company_tickers_exchange.json
-        saves JSON file as "company_tickers_exchange.json"
-    """
-    # URL of the JSON file
-    url = "https://www.sec.gov/files/company_tickers_exchange.json"
-
-    # Filename to save the JSON data (root directory)
-    filename = "company_tickers_exchange.json"
-
-    try:
-        # Send a GET request to the URL
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-
-        # Save the JSON response to a file
-        with open(filename, 'w') as file:
-            file.write(response.text)
-        print(f"JSON file saved as {filename}")
-
-    except requests.exceptions.HTTPError as e:
-        print(f"HTTP Error: {e}")
-    except requests.exceptions.RequestException as e:
-        print(f"Request Error: {e}")
-
-
 def user_input():
     """
-
-    :return: ticker, report, num_reports
+    User selects report type (8-K, 10-k, or 10-Q) and company 'ticker'
+    :return: ticker, report
     """
     while True:
-        # User inputs the ticker, report type, and years
+        # User inputs the ticker and report type, converts to uppercase
         ticker = input("Please enter the stock ticker (ex. MSFT): ").upper()
-        report = input("Please enter the report (10-K or 10-Q): ").upper()
-        num_reports = int(input("Please enter the number of report: "))
+        report = input("Please enter the report (10-K, 10-Q, 8-K): ").upper()
 
         # Confirm inputs are correct
         if report == "10-K":
             confirm_10k = input(f"Please confirm: \n "
-                                f"You would like {num_reports} 10-K reports for {ticker} (Y or N): ").upper()
+                                f"You would like 10-K reports for {ticker} (Y or N): ").upper()
             if confirm_10k == "Y":
-                print(f"Ok, getting ({num_reports}) annual report for ticker {ticker}.")
+                print(f"Ok, getting 10-K annual reports for ticker {ticker}.")
                 break
             else:
                 print("Ok, please input your choices again:")
 
         elif report == "10-Q":
             confirm_10q = input(f"Please confirm: \n "
-                                f"You would like {num_reports} 10-Q report for {ticker} (Y or N): ").upper()
+                                f"You would like  10-Q report for {ticker} (Y or N): ").upper()
             if confirm_10q == "Y":
-                print(f"Ok, getting ({num_reports}) quarterly report for ticker {ticker}.")
+                print(f"Ok, getting 10-Q quarterly reports for ticker {ticker}.")
+                break
+            else:
+                print("Ok, please input your choices again:")
+        elif report == "8-K":
+            confirm_10q = input(f"Please confirm: \n "
+                                f"You would like  8-K report for {ticker} (Y or N): ").upper()
+            if confirm_10q == "Y":
+                print(f"Ok, getting 8-K events reports for ticker {ticker}.")
                 break
             else:
                 print("Ok, please input your choices again:")
         else:
             print("You entered an invalid parameters, please re-enter your inputs:")
 
-    return ticker, report, num_reports
+    return ticker, report
 
 
 def ticker_to_cik(ticker):
     """
-
     :param ticker:
     :return: cik, url
     """
@@ -98,13 +76,12 @@ def ticker_to_cik(ticker):
     # Get current filing history url using the CIK,
     # Note CIK needs to be 10-digits so zfill pads the CIK value with zeros
     url = f"https://data.sec.gov/submissions/CIK{str(cik).zfill(10)}.json"
-
+    # print(url)
     return cik, url
 
 
 def filings_to_df(url):
     """
-
     :param url:
     :return: company_filings_df
     """
@@ -127,61 +104,105 @@ def filings_to_df(url):
     except requests.exceptions.RequestException as e:
         print(f"Request Error: {e}")
 
+    # print(company_filings_df.keys())
     return company_filings_df
 
 
 def filter_reports(company_filings_df, report):
     """
-
     :param company_filings_df:
     :param report:
     :return: report_filtered
     """
-    # Filter to get just 10-K or 10-Q df
+    # Sort df by 10-K
     if report == "10-K":
         report_filtered = company_filings_df[company_filings_df.form == "10-K"]
         return report_filtered
+
+    # Sort df by 10-Q
     elif report == "10-Q":
         report_filtered = company_filings_df[company_filings_df.form == "10-Q"]
         return report_filtered
+
+    # Sort df by 8-K reports
+    elif report == "8-K":
+        report_filtered = company_filings_df[company_filings_df.form == "8-K"]
+        return report_filtered
+
     else:
         print("Invalid Report")
 
     return
 
 
-def access_reports(report_filtered, num_reports, cik, output_folder):
+def access_reports(report_filtered, cik, report, ticker, output_folder):
     """
 
     :param report_filtered:
-    :param num_reports:
     :param cik:
+    :param report:
+    :param ticker:
     :param output_folder:
-    :return: None
+    :return:
     """
     # get the number of report_folder from the filtered df
     report_length = len(report_filtered)
+    print(f"There are ({report_length}) reports\n")
+    num_reports = int(input("Please enter the number of reports you want to access: "))
 
-    # if there are fewer report_folder than requested, set the index to the number of report_folder available
-    if num_reports > report_length:
-        idx = report_length
-    else:
-        idx = num_reports
-
-    for i in range(0, idx):
+    for i in range(0, num_reports):
+        # Get accession number and remove the dashes
         access_number = report_filtered.accessionNumber.values[i].replace("-", "")
-        file_name = report_filtered.primaryDocument.values[i]
 
-        # remove the .htm from the file name
-        report_name = file_name.split(".")[0]
+        # Get file name
+        file_name = report_filtered.primaryDocument.values[i]
+        report_date = report_filtered.reportDate.values[i].replace("-", "")
+        report_remove_dash = report.replace("-", "")
+
+        # report name ticker + report date + report type
+        report_name = ticker + '_' + report_date + '_' + report_remove_dash
 
         # Get url using cik, access_number, and file_name
         url = f"https://www.sec.gov/Archives/edgar/data/{cik}/{access_number}/{file_name}"
 
-        # calls function to convert webpage to pdf
-        convert_to_pdf(url, report_name, output_folder)
+        # Create pdf from the 10-K and 10-Q html link
+        if report == "10-K" or report == "10-Q":
+            pass
+            # calls function to convert webpage to pdf
+            convert_to_pdf(url, report_name, output_folder)
 
+        # Get the exhibit 99.1 link
+        elif report == "8-K":
+            exhibit_link = get_href_links(url)
+            convert_to_pdf(exhibit_link, report_name, output_folder)
+
+        else:
+            print("Invalid Report")
     return
+
+
+def get_href_links(url):
+    soup = BeautifulSoup(requests.get(url, headers=headers).content, 'html.parser')
+
+    # split at last / from url
+    base_url = url.rsplit('/', maxsplit=1)[0] + '/'
+
+    # remove duplicates
+    out = set()
+
+    # look for exhibit 99.1 by searching for "ex99"
+    for link in soup.select('[href*="ex99"]'):
+
+        # add extension to base url
+        out.add(base_url + link['href'])
+
+    # check if there is an ex 99.1 link
+    out_list = list(out)
+    if not out_list:
+        print("no ex 99.1 in this report")
+    else:
+        print(f"URL EX99.1: {out_list[0]}")
+        return out_list[0]
 
 
 def convert_to_pdf(url, report_name, output_folder):
@@ -195,8 +216,8 @@ def convert_to_pdf(url, report_name, output_folder):
     # sets location of wkhtmltopdf.exe, change path if necessary
     path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
 
-    # setup config
-    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+    # setup configs
+    configs = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
     try:
         # Fetch the webpage content
@@ -212,7 +233,7 @@ def convert_to_pdf(url, report_name, output_folder):
         pdf_file = os.path.join(output_folder, f"{report_name}.pdf")
 
         # Convert HTML to PDF
-        pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enable-local-file-access": ""})
+        pdfkit.from_string(html_content, pdf_file, configuration=configs, options={"enable-local-file-access": ""})
 
         print(f"PDF successfully created at {pdf_file}")
 
