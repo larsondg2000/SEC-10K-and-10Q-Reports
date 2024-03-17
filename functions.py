@@ -167,14 +167,21 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
 
         # Create pdf from the 10-K and 10-Q html link
         if report == "10-K" or report == "10-Q":
-            pass
+            print(f"**** Report {i + 1} ****")
             # calls function to convert webpage to pdf
             convert_to_pdf(url, report_name, output_folder)
 
         # Get the exhibit 99.1 link
         elif report == "8-K":
+            print(f"**** Report {i + 1} ****")
             exhibit_link = get_href_links(url)
-            convert_to_pdf(exhibit_link, report_name, output_folder)
+
+            # Check if ex 9.1 report exists
+            if not exhibit_link:
+                print("no ex 99.1 in this report")
+                print("\n")
+            else:
+                convert_to_pdf(exhibit_link, report_name, output_folder)
 
         else:
             print("Invalid Report")
@@ -186,6 +193,7 @@ def get_href_links(url):
 
     # split at last / from url
     base_url = url.rsplit('/', maxsplit=1)[0] + '/'
+    print(f"Base URL: {base_url}")
 
     # remove duplicates
     out = set()
@@ -199,9 +207,9 @@ def get_href_links(url):
     # check if there is an ex 99.1 link
     out_list = list(out)
     if not out_list:
-        print("no ex 99.1 in this report")
+        return out_list
     else:
-        print(f"URL EX99.1: {out_list[0]}")
+        # print(f"URL EX99.1: {out_list[0]}")
         return out_list[0]
 
 
@@ -235,7 +243,9 @@ def convert_to_pdf(url, report_name, output_folder):
         # Convert HTML to PDF
         pdfkit.from_string(html_content, pdf_file, configuration=configs, options={"enable-local-file-access": ""})
 
+        # Confirm pdf created
         print(f"PDF successfully created at {pdf_file}")
+        print("\n")
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP Error: {e}")
