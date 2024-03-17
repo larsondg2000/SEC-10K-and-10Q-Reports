@@ -1,3 +1,7 @@
+"""
+All the functions for the program
+"""
+
 import os
 import pandas as pd
 import json
@@ -60,8 +64,9 @@ def user_input():
 
 def ticker_to_cik(ticker):
     """
-    :param ticker:
-    :return: cik, url
+    converts ticker to CIK and gets url for dictionary of reports
+    :param ticker: company ticker (str)
+    :return: cik to access reports for company (str), url for all reports (str)
     """
     # load the saved JSON file
     with open("company_tickers_exchange.json", "r") as f:
@@ -76,14 +81,15 @@ def ticker_to_cik(ticker):
     # Get current filing history url using the CIK,
     # Note CIK needs to be 10-digits so zfill pads the CIK value with zeros
     url = f"https://data.sec.gov/submissions/CIK{str(cik).zfill(10)}.json"
-    # print(url)
+
     return cik, url
 
 
 def filings_to_df(url):
     """
-    :param url:
-    :return: company_filings_df
+    converts dictionary to pandas df
+    :param url: filings dictionary (str)
+    :return: company_filings_df (pandas df)
     """
     # initialize pandas df
     company_filings_df = pd.DataFrame()
@@ -104,15 +110,16 @@ def filings_to_df(url):
     except requests.exceptions.RequestException as e:
         print(f"Request Error: {e}")
 
-    # print(company_filings_df.keys())
+    print(type(company_filings_df))
     return company_filings_df
 
 
 def filter_reports(company_filings_df, report):
     """
-    :param company_filings_df:
-    :param report:
-    :return: report_filtered
+    filters df based on report
+    :param company_filings_df: fling in pandas (df)
+    :param report: report type (10-K, 10-Q, 8-k) (str)
+    :return: report_filtered pandas df with only selected report type (df)
     """
     # Sort df by 10-K
     if report == "10-K":
@@ -137,12 +144,15 @@ def filter_reports(company_filings_df, report):
 
 def access_reports(report_filtered, cik, report, ticker, output_folder):
     """
-
+    Gets the number of reports and asks user how many reports they want
+    Loops through all the reports and gets url for each report requested
+    10-K and 10-Q: calls convert_to_pdf
+    8-K: calls  get_href_links to get ex 99.1 url (press release), calls convert_to_pdf
     :param report_filtered:
-    :param cik:
-    :param report:
-    :param ticker:
-    :param output_folder:
+    :param cik: company CIK (str)
+    :param report: report type (str)
+    :param ticker: company ticker
+    :param output_folder: location where pdf files will be saved
     :return:
     """
     # get the number of report_folder from the filtered df
@@ -172,7 +182,7 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
             # calls function to convert webpage to pdf
             convert_to_pdf(url, report_name, output_folder)
 
-        # Get the exhibit 99.1 link
+        # Get the exhibit 99.1 file link
         elif report == "8-K":
             print(f"**** Report {i + 1} ****")
             exhibit_link = get_href_links(url)
@@ -190,6 +200,11 @@ def access_reports(report_filtered, cik, report, ticker, output_folder):
 
 
 def get_href_links(url):
+    """
+    Get hyperlink url for ex 99.1 file and calls convert_to_pdf
+    :param url: ex 99.1 link (str)
+    :return: None
+    """
     # Scrape webpage
     soup = BeautifulSoup(requests.get(url, headers=headers).content, 'html.parser')
 
@@ -206,21 +221,20 @@ def get_href_links(url):
         # add extension to base url
         out.add(base_url + link['href'])
 
-    # check if there is an ex 99.1 link
+    # check if there is an ex 99.1 file hyperlink
     out_list = list(out)
     if not out_list:
         return out_list
     else:
-        # print(f"URL EX99.1: {out_list[0]}")
         return out_list[0]
 
 
 def convert_to_pdf(url, report_name, output_folder):
     """
-
-    :param url:
-    :param report_name:
-    :param output_folder:
+    Coverts html webpage to a pdf file and saves file to output folder
+    :param url: webpage to convert to pdf (str)
+    :param report_name: name of report ticker-date-report (str)
+    :param output_folder: desired folder to save report (str)
     :return: None
     """
     # sets location of wkhtmltopdf.exe, change path if necessary

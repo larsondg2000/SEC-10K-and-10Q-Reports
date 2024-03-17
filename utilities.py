@@ -1,11 +1,13 @@
-
+"""
+Utility program to get 'company_tickers_exchange.json' file
+"""
 import requests
 
 # Used to hide my email
-from decouple import config
-EMAIL = config("MY_EMAIL")
+from my_email import hide_email
+EMAIL = (hide_email.get("email"))
 
-
+# required for requests
 headers = {
     "User-Agent": "EMAIL",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
@@ -14,8 +16,8 @@ headers = {
 
 def download_json():
     """
-    run once
-    Download the JSON file of companies, tickers, and CIKs from SEC website:
+    run once if the file is not in your root directory or file has changed
+    Downloads the JSON file of companies, tickers, and CIKs from SEC website:
         url: https://www.sec.gov/files/company_tickers_exchange.json
         saves JSON file as "company_tickers_exchange.json"
     """

@@ -16,10 +16,10 @@ def main():
 
     :return:
     """
-    # Set defaults
+    # Set default output folder
     output_folder = "report_folder"
 
-    # User enters company ticker desired and report type
+    # User enters company ticker and report type
     ticker, report = user_input()
 
     # Gets CIK for ticker and all the filings for that ticker
