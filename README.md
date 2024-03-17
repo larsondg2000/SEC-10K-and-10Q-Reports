@@ -105,7 +105,8 @@ pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enabl
       - functions: access_reports, get_href_links, webpage_to_pdf
       - Inputs: report_filtered, cik, report, ticker, output_folder
       - Outputs: pdf file of exhibit 99.1 saved to reports_folder.  File format *ticker-date-report.pdf*
-* Additional: utilities.py file can be used to download the 'company_tickers_exchange.json' file
+
+* Additional: run utilities.py file to download the 'company_tickers_exchange.json' file
 
 #### Notes
 * Program can be customized
