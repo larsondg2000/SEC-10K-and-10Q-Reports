@@ -110,7 +110,6 @@ def filings_to_df(url):
     except requests.exceptions.RequestException as e:
         print(f"Request Error: {e}")
 
-    print(type(company_filings_df))
     return company_filings_df
 
 

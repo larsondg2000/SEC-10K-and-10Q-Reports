@@ -8,11 +8,11 @@
 - SEC Developer Resources: https://www.sec.gov/developer
 
 ## Overview
-The program gets 10-K, 10-Q, or 8-K reports from the SEC database for a selected stock. The user inputs the selected 
-stock ticker and the report type.  For the 10-K and 10-Q reports, the user can select the number of reports and a pdf
-file will be created.  The 8-K report will extract the exhibit 99.1 link from the report (if it exists) and create a
-pdf file.  The exhibit 99.1 will contain company press releases including the quarterly and annual report press 
-releases.  It also will contain press releases from other major events.
+The program creates 10-K, 10-Q, or 8-K exhibit 99.1 pdf files using data from the SEC database (EDGAR). The user 
+inputs a stock ticker, the report type, and the number of reports desired.  For the 10-K and 10-Q reports, the 
+selected the number of reports will be converted from an HTML webpage to a pdf file. The 8-K report will extract the 
+exhibit 99.1 hyperlink from the report (if it exists) and create a pdf file.  The pdf files are automatically saved to
+an output folder.
 
 
 ## Terms

@@ -17,7 +17,7 @@ def main():
     :return:
     """
     # Set default output folder
-    output_folder = "report_folder"
+    output_folder = r"C:\Users\17272\OneDrive\Desktop\Investing\LAZR\10k"
 
     # User enters company ticker and report type
     ticker, report = user_input()
