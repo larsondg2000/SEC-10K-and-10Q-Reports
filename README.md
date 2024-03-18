@@ -47,7 +47,7 @@ headers = {
 * (optional) hide your email:
   - create a py file with the following:
 ```
-- hide_email = {
+ hide_email = {
     'my_email': "your_email@your_domain.com"
 }
 ```

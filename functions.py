@@ -1,5 +1,6 @@
 """
 All the functions for the program
+Enter your email in headers before running
 """
 
 import os
@@ -8,14 +9,20 @@ import json
 import requests
 import pdfkit
 from bs4 import BeautifulSoup
-
-# Used to hide my email
+"""
+# OPTIONAL: hides your email email
 from my_email import hide_email
 EMAIL = (hide_email.get("email"))
 
 # required for requests
 headers = {
     "User-Agent": "EMAIL",  # Your email as the User-Agent
+    "Accept-Encoding": "gzip, deflate"
+}
+"""
+# enter your email prior to running
+headers = {
+    "User-Agent": "your_email@your_domain.com",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 
