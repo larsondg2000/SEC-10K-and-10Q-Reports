@@ -266,7 +266,7 @@ def convert_to_pdf(url, report_name, output_folder):
         pdfkit.from_string(html_content, pdf_file, configuration=configs, options={"enable-local-file-access": ""})
 
         # Confirm pdf created
-        print(f"PDF successfully created at {pdf_file}")
+        print(f"PDF file {pdf_file} successfully created!")
         print("\n")
 
     except requests.exceptions.HTTPError as e:
