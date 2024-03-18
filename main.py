@@ -16,8 +16,9 @@ def main():
 
     :return:
     """
-    # Set default output folder
-    output_folder = r"C:\Users\17272\OneDrive\Desktop\Investing\LAZR\10k"
+    # pdf save location: change to desired location
+    # Default is root directory in report_folder
+    output_folder = "report_folder"
 
     # User enters company ticker and report type
     ticker, report = user_input()
