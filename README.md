@@ -1,5 +1,5 @@
 # 10-K, 10-Q, and 8-K Reports from SEC Database
-### _Includes Exhibit 99.1 Reports_
+#### _Includes Exhibit 99.1 Reports_
 ![alt-text](ws2.jpeg "Wall Street") 
 
 ![alt-text](msft8k.png "8-K Press Release")
