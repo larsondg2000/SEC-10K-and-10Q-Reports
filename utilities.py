@@ -9,7 +9,7 @@ EMAIL = (hide_email.get("email"))
 
 # required for requests
 headers = {
-    "User-Agent": "EMAIL",  # Your email as the User-Agent
+    "User-Agent": EMAIL,  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 

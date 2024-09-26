@@ -18,7 +18,7 @@ def main():
     """
     # pdf save location: change to desired location
     # Default is root directory in report_folder
-    output_folder = "report_folder"
+    output_folder = r"C:\Users\17272\OneDrive\Desktop\Investing\CRWD"
 
     # User enters company ticker and report type
     ticker, report = user_input()

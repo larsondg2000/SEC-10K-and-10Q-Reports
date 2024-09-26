@@ -36,34 +36,37 @@ additional information about a particular event or transaction.
 * requests
 * pdfkit
 * beautifulsoup4
-* __requires your email address in the headers setup for requests.__  Add your email address prior to running.
+* __requires your email address in the headers setup for requests.__ .
+* Hide your email:
+  - create a hide_email.py file with the following:
+```
+ hide_email = {
+    'email': "your_email@your_domain.com"
+}
+```
+- The following code is in functions.py and utilities.py to import your email into headers
+```
+# Used to hide my email
+from my_email import hide_email
+EMAIL = hide_email.get('email')
 
+headers = {
+    "User-Agent": EMAIL,  # Your email as the User-Agent
+    "Accept-Encoding": "gzip, deflate"
+}
+
+```
+- (optional) remove the code above and hard code your email in the headers
 ```
 headers = {
     "User-Agent": "your_email@your_domain.com",  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 ```  
-* (optional) hide your email:
-  - create a py file with the following:
+* Change the output save location in main.py to desired path.
+* Be careful with absolute and relative paths.
 ```
- hide_email = {
-    'my_email': "your_email@your_domain.com"
-}
-```
-- Add from file.py import hide_email
-   - EMAIL = hide_email.get('MY_EMAIL')
-   - Include the following in functions.py:
-```
-# Used to hide my email
-from email import hide_email
-EMAIL = hide_email.get('MY_EMAIL')
-
-headers = {
-    "User-Agent": "EMAIL",  # Your email as the User-Agent
-    "Accept-Encoding": "gzip, deflate"
-}
-
+output_folder = r"C:\Users\****\"
 ```
 
 ## Notes on pdfkit
@@ -110,8 +113,10 @@ pdfkit.from_string(html_content, pdf_file, configuration=config, options={"enabl
       - Inputs: report_filtered, cik, report, ticker, output_folder
       - Outputs: pdf file of exhibit 99.1 saved to reports_folder.  File format *ticker-date-report.pdf*
 
-* Additional: run utilities.py file to download the 'company_tickers_exchange.json' file
+* Additional: 
+- Run utilities.py file to download the 'company_tickers_exchange.json' file.
+- Run this periodically to update the file as needed.
 
 #### Notes
 * Program can be customized
-* Future: add webpage interface
+* There is a Streamlit version of this program which has a user interface. it also summarizes the reports: https://github.com/larsondg2000/sec-streamlit

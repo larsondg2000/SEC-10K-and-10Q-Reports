@@ -9,38 +9,33 @@ import json
 import requests
 import pdfkit
 from bs4 import BeautifulSoup
-"""
-# OPTIONAL: hides your email email
+
+# hides your email email
 from my_email import hide_email
 EMAIL = (hide_email.get("email"))
 
 # required for requests
 headers = {
-    "User-Agent": "EMAIL",  # Your email as the User-Agent
-    "Accept-Encoding": "gzip, deflate"
-}
-"""
-# enter your email prior to running
-headers = {
-    "User-Agent": "your_email@your_domain.com",  # Your email as the User-Agent
+    "User-Agent": EMAIL,  # Your email as the User-Agent
     "Accept-Encoding": "gzip, deflate"
 }
 
-
-def user_input():
+def user_input() -> tuple[str, str]:
     """
-    User selects report type (8-K, 10-k, or 10-Q) and company 'ticker'
-    :return: ticker, report
+    Prompts the user to select a report type (8-K, 10-K, or 10-Q) and enter a company ticker symbol.
+
+    Returns:
+        A tuple containing the user-selected ticker symbol and report type.
     """
     while True:
         # User inputs the ticker and report type, converts to uppercase
-        ticker = input("Please enter the stock ticker (ex. MSFT): ").upper()
-        report = input("Please enter the report (10-K, 10-Q, 8-K): ").upper()
+        ticker: str = input("Please enter the stock ticker (ex. MSFT): ").upper()
+        report: str = input("Please enter the report (10-K, 10-Q, 8-K): ").upper()
 
-        # Confirm inputs are correct
+        # Confirm inputs are correct based on the selected report type
         if report == "10-K":
-            confirm_10k = input(f"Please confirm: \n "
-                                f"You would like 10-K reports for {ticker} (Y or N): ").upper()
+            confirm_10k: str = input(f"Please confirm: \n "
+                                     f"You would like 10-K reports for {ticker} (Y or N): ").upper()
             if confirm_10k == "Y":
                 print(f"Ok, getting 10-K annual reports for ticker {ticker}.")
                 break
@@ -48,21 +43,23 @@ def user_input():
                 print("Ok, please input your choices again:")
 
         elif report == "10-Q":
-            confirm_10q = input(f"Please confirm: \n "
-                                f"You would like  10-Q report for {ticker} (Y or N): ").upper()
+            confirm_10q: str = input(f"Please confirm: \n "
+                                     f"You would like 10-Q report for {ticker} (Y or N): ").upper()
             if confirm_10q == "Y":
                 print(f"Ok, getting 10-Q quarterly reports for ticker {ticker}.")
                 break
             else:
                 print("Ok, please input your choices again:")
+
         elif report == "8-K":
-            confirm_10q = input(f"Please confirm: \n "
-                                f"You would like  8-K report for {ticker} (Y or N): ").upper()
-            if confirm_10q == "Y":
+            confirm_8k: str = input(f"Please confirm: \n "
+                                    f"You would like 8-K report for {ticker} (Y or N): ").upper()
+            if confirm_8k == "Y":
                 print(f"Ok, getting 8-K events reports for ticker {ticker}.")
                 break
             else:
                 print("Ok, please input your choices again:")
+
         else:
             print("You entered an invalid parameters, please re-enter your inputs:")
 
@@ -230,8 +227,10 @@ def get_href_links(url):
     # check if there is an ex 99.1 file hyperlink
     out_list = list(out)
     if not out_list:
+        # returns empty list
         return out_list
     else:
+        # returns first item in list (url)
         return out_list[0]
 
 
@@ -266,7 +265,7 @@ def convert_to_pdf(url, report_name, output_folder):
         pdfkit.from_string(html_content, pdf_file, configuration=configs, options={"enable-local-file-access": ""})
 
         # Confirm pdf created
-        print(f"PDF file {pdf_file} successfully created!")
+        print(f"PDF file {report_name} successfully created!")
         print("\n")
 
     except requests.exceptions.HTTPError as e:
